@@ -1,0 +1,89 @@
+# ─── FlightBoard Configuration ───
+
+# Your location (used for distance calculations and bounding box)
+location:
+  latitude: 53.7457   # Hull, UK
+  longitude: -0.3367
+  name: "Hull"
+
+# Search radius in nautical miles
+radius_nm: 10
+
+# ─── Data Source ───
+# Choose ONE of: rtlsdr, fr24, opensky, mock
+#
+source:
+
+  # ── RTL-SDR (local ADS-B receiver) ──
+  # Free, real-time, no API key. Requires RTL-SDR USB stick
+  # and dump1090/readsb/tar1090 running locally.
+  # Install: sudo apt install dump1090-mutability
+  #
+  type: rtlsdr
+  # url: "http://localhost:8080/data/aircraft.json"  # auto-detected if omitted
+
+  # ── FlightRadar24 API ──
+  # Paid ($9/mo Explorer). Rich data with airline names & routes.
+  # Get token from https://fr24api.flightradar24.com/key-management
+  #
+  # type: fr24
+  # api_token: "YOUR_FR24_TOKEN_HERE"
+  # sandbox: false  # true = static test data, no credits used
+
+  # ── OpenSky Network ──
+  # Free, no key needed. Rate-limited (10 req/min anonymous).
+  # Optional account for higher limits: https://opensky-network.org
+  #
+  # type: opensky
+  # username: ""
+  # password: ""
+
+  # ── Mock (built-in test data) ──
+  # No hardware or network needed. Good for UI development.
+  #
+  # type: mock
+
+# How often to poll the data source (seconds)
+# RTL-SDR: 1-5s recommended (free, local)
+# FR24: 60-90s recommended (credit budget)
+# OpenSky: 10-15s recommended (rate limits)
+poll_interval_seconds: 5
+
+# ─── Aircraft Enrichment ───
+# Enriches raw ADS-B data with aircraft type, registration, airline, routes.
+# Local SQLite database seeded from OpenSky (~500k aircraft).
+# Route lookups via AirLabs API (free: 1,000 calls/month).
+enrichment:
+  enabled: true
+  database: "aircraft.db"
+
+  # AirLabs API key for route lookups (origin/destination airports).
+  # Free tier: 1,000 API calls/month — plenty with caching.
+  # Get your key at: https://airlabs.co/
+  # Leave empty to skip route lookups.
+  airlabs_api_key: ""
+
+  # Max API calls per app session (budget guard).
+  # Routes are cached locally so the same flight never costs another call.
+  max_api_calls_per_session: 200
+
+# ─── Display Settings ───
+display:
+  fullscreen: false
+  window_width: 800
+  window_height: 480
+  default_view: "hero"
+  hero_cycle_seconds: 8
+  sort_by: "distance"    # distance, altitude, callsign
+
+  colours:
+    background: "#0a0a0a"
+    flap_text: "#f0d060"
+    flap_text_active: "#f5c842"
+    flap_bg: "#1c1c1c"
+    flap_bg_active: "#1a1a1a"
+    label: "#555555"
+    divider: "#2a2a2a"
+    footer: "#444444"
+
+  flap_speed_ms: 30

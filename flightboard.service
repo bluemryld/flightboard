@@ -1,0 +1,20 @@
+[Unit]
+Description=FlightBoard - Overhead Aircraft Display
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/flightboard
+ExecStart=/home/pi/flightboard/venv/bin/python /home/pi/flightboard/main.py --fullscreen
+Restart=on-failure
+RestartSec=10
+Environment=DISPLAY=:0
+Environment=SDL_FBDEV=/dev/fb0
+
+# Give it time to connect to WiFi
+ExecStartPre=/bin/sleep 5
+
+[Install]
+WantedBy=graphical.target

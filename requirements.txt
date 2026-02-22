@@ -1,0 +1,6 @@
+pygame>=2.5.0
+PyYAML>=6.0
+requests>=2.31.0
+
+# Optional - only needed for FR24 source (improves API access):
+# pip install fr24sdk
