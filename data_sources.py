@@ -150,13 +150,13 @@ class RTLSDRSource(DataSource):
     No API key required. Free. Real-time. Range depends on antenna.
     """
 
-    # Common endpoints to try in order
+    # Common endpoints to try in order (readsb preferred)
     DEFAULT_URLS = [
-        "http://localhost:8080/data/aircraft.json",    # dump1090-mutability / readsb
-        "http://localhost/tar1090/data/aircraft.json",  # tar1090
-        "http://localhost:8080/data.json",              # older dump1090
-        "http://localhost:30152/data/aircraft.json",    # readsb alt port
-        "http://localhost:16601/data/aircraft.json",    # piaware
+        "http://localhost/tar1090/data/aircraft.json",  # tar1090 (readsb add-on, best UI)
+        "http://localhost:8080/data/aircraft.json",      # readsb / dump1090-mutability
+        "http://localhost:30152/data/aircraft.json",     # readsb alt port
+        "http://localhost:16601/data/aircraft.json",     # piaware
+        "http://localhost:8080/data.json",               # older dump1090
     ]
 
     def __init__(self, lat: float, lon: float, radius_nm: float = 10,
@@ -190,8 +190,8 @@ class RTLSDRSource(DataSource):
         default = self.DEFAULT_URLS[0]
         logger.warning(
             f"RTL-SDR: no endpoint detected. Defaulting to {default}\n"
-            "  Make sure dump1090, readsb, or tar1090 is running.\n"
-            "  Install with: sudo apt install dump1090-mutability\n"
+            "  Make sure readsb, dump1090, or tar1090 is running.\n"
+            "  Install with: sudo bash -c \"$(curl -sL https://github.com/wiedehopf/adsb-scripts/raw/master/readsb-install.sh)\"\n"
             "  Or specify url in config: source.url: http://your-host:8080/data/aircraft.json"
         )
         return default

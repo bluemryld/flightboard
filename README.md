@@ -20,7 +20,7 @@ A split-flap style display for Raspberry Pi showing live aircraft overhead. Pull
 
 | Source | Cost | What You Get | Requirements |
 |--------|------|--------------|--------------|
-| **RTL-SDR** | Free (hardware ~£25) | Real-time positions + enriched metadata + routes | RTL-SDR USB stick, dump1090/readsb |
+| **RTL-SDR** | Free (hardware ~£25) | Real-time positions + enriched metadata + routes | RTL-SDR USB stick, readsb |
 | **OpenSky Network** | Free | Live positions + enriched metadata + routes | Internet connection (rate-limited) |
 | **FlightRadar24** | $9/month | Full data including routes built-in | API token |
 | **Mock** | Free | 8 static test flights | Nothing |
@@ -75,13 +75,20 @@ nano config.yaml                     # Set your lat/lon and data source
 If you have an RTL-SDR USB stick:
 
 ```bash
-sudo apt install dump1090-mutability
+# Install readsb (recommended - actively maintained, includes aircraft DB)
+sudo bash -c "$(curl -sL https://github.com/wiedehopf/adsb-scripts/raw/master/readsb-install.sh)"
+
+# Optional: add tar1090 for a web-based map UI
+sudo bash -c "$(curl -sL https://github.com/wiedehopf/tar1090/raw/master/install.sh)"
 
 # Verify it's receiving aircraft:
-curl http://localhost:8080/data/aircraft.json
+curl http://localhost/tar1090/data/aircraft.json
+# or: curl http://localhost:8080/data/aircraft.json
 ```
 
-FlightBoard auto-detects the dump1090/readsb/tar1090 endpoint. If your decoder runs on a different host or port, set `source.url` in the config.
+FlightBoard auto-detects the readsb/tar1090/dump1090 endpoint. If your decoder runs on a different host or port, set `source.url` in the config.
+
+> **Note:** `dump1090-mutability` also works but is no longer actively maintained. readsb is the recommended replacement — same JSON format, better performance, built-in aircraft type/registration database.
 
 ### AirLabs Route Lookups (Optional)
 
@@ -303,9 +310,11 @@ pip install -r requirements.txt
 
 ### RTL-SDR not detecting aircraft
 
-- Check dump1090 is running: `curl http://localhost:8080/data/aircraft.json`
+- Check readsb is running: `sudo systemctl status readsb`
+- Check the JSON endpoint: `curl http://localhost:8080/data/aircraft.json`
 - Check the USB device is recognised: `lsusb | grep RTL`
 - If using a different port/host, set `source.url` in config.yaml
+- View readsb logs: `journalctl -u readsb -f`
 
 ### No route information showing
 
@@ -329,7 +338,7 @@ pip install -r requirements.txt
 
 - Aircraft database: [OpenSky Network](https://opensky-network.org/data/aircraft)
 - Route lookups: [AirLabs](https://airlabs.co/)
-- ADS-B decoding: [dump1090](https://github.com/flightaware/dump1090) / [readsb](https://github.com/wiedehopf/readsb)
+- ADS-B decoding: [readsb](https://github.com/wiedehopf/readsb) / [tar1090](https://github.com/wiedehopf/tar1090) / [dump1090](https://github.com/flightaware/dump1090)
 - Flight data: [FlightRadar24 API](https://fr24api.flightradar24.com/) / [OpenSky Network API](https://opensky-network.org/apidoc/)
 
 ## License

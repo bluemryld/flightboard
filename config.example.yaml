@@ -16,8 +16,8 @@ source:
 
   # ── RTL-SDR (local ADS-B receiver) ──
   # Free, real-time, no API key. Requires RTL-SDR USB stick
-  # and dump1090/readsb/tar1090 running locally.
-  # Install: sudo apt install dump1090-mutability
+  # and readsb (or dump1090/tar1090) running locally.
+  # Install: https://github.com/wiedehopf/adsb-scripts/wiki/Automatic-installation-for-readsb
   #
   type: rtlsdr
   # url: "http://localhost:8080/data/aircraft.json"  # auto-detected if omitted
